@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我有些事情想和你说~  -- By:JoBackRer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f5f7, #eaeef5);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+            color: #1d1d1f;
+            z-index: 10;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+            letter-spacing: -0.5px;
+        }
+        
+        .container p {
+            font-size: 1.1rem;
+            color: #6e6e73;
+            line-height: 1.6;
+        }
+        
+        /* Mac风格弹窗 */
+        .popup {
+            position: absolute;
+            width: 300px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            z-index: 100;
+            animation: popIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .popup:hover {
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* 彩色标题栏 */
+        .popup-titlebar {
+            height: 32px;
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: move;
+        }
+        
+        /* Mac经典控制按钮 */
+        .mac-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .mac-control-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transition: transform 0.15s ease;
+        }
+        
+        .mac-control-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .close-btn {
+            background: #ff5f58;
+        }
+        
+        .min-btn {
+            background: #ffbd2e;
+        }
+        
+        .max-btn {
+            background: #15c25d;
+        }
+        
+        .popup-title {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.2px;
+            font-weight: 500;
+        }
+        
+        /* 内容区 */
+        .popup-content {
+            padding: 22px 20px;
+            color: #1d1d1f;
+            font-size: 15px;
+            line-height: 1.65;
+            min-height: 90px;
+            background: white;
+        }
+        
+        /* 弹窗弹出动画 */
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        /* 中心提示弹窗样式 */
+        .center-popup {
+            z-index: 300 !important;
+            width: 400px !important;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 95, 88, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(255, 95, 88, 0.7);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 95, 88, 0.4);
+            }
+        }
+        
+        .center-popup .popup-content {
+            font-size: 2.5rem;
+            text-align: center;
+            padding: 40px 20px;
+            font-weight: bold;
+            color: #ff5f58;
+        }
+        
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.8;
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: #6e6e73;
+            font-size: 13px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="container">
+        <h1>藏在代码里的喜欢</h1>
+        <p>就像这些窗口，悄悄占满了整个屏幕，也占满了我的心。</p>
+    </div>
+    
+    <div class="footer">
+        <p>点击红色按钮关闭 | 标题栏可拖动</p>
+    </div>
+    
+    <script>
+        // 爱心粒子
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const particles = [];
+        const particleCount = 70;
+        
+        class Particle {
+            constructor() {
+                this.reset();
+                this.size = Math.random() * 10 + 5;
+                this.speedX = Math.random() * 0.15 - 0.075;
+                this.speedY = Math.random() * 0.15 - 0.075;
+                this.color = `hsl(${Math.random() * 20 + 340}, 80%, ${Math.random() * 15 + 60}%)`;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = Math.random() * 0.006 - 0.003;
+                this.opacity = Math.random() * 0.6 + 0.4;
+            }
+            
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.rotation += this.rotationSpeed;
+                
+                if (this.x < -80 || this.x > canvas.width + 80 || 
+                    this.y < -80 || this.y > canvas.height + 80) {
+                    this.reset();
+                }
+            }
+            
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                ctx.beginPath();
+                const size = this.size;
+                ctx.moveTo(0, -size * 0.6);
+                ctx.bezierCurveTo(
+                    -size * 1, -size * 1.2,
+                    -size * 1.5, -size * 0.3,
+                    0, size * 0.5
+                );
+                ctx.bezierCurveTo(
+                    size * 1.5, -size * 0.3,
+                    size * 1, -size * 1.2,
+                    0, -size * 0.6
+                );
+                ctx.closePath();
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        animate();
+        
+        // Mac风格彩色弹窗逻辑
+        const loveMessages = [
+            "想告诉你：今天的云很好看，像你笑起来的样子",
+            "提醒你：睡前记得喝杯温水，我帮你记着了",
+            "发现一件事：每次看到你，我的心跳都会慢半拍",
+            "小提示：明天降温，记得把我给你买的围巾带上",
+            "偷偷说：我存了好多关于你的小事，想慢慢讲给你听",
+            "汇报：今天也有很认真地想你，共计102次",
+            "分享：吃到一家超好吃的店，第一个想约的人是你",
+            "发现：你皱眉的时候，我比你更想抚平那些烦恼",
+            "提醒：别总熬夜啦，我设置了专属晚安提醒哦",
+            "坦白：其实我练习了好多次，才敢对你说这些话",
+            "记录：你今天说的那句玩笑，我偷偷记在备忘录里了",
+            "关心：听说你今天有点累，要不要听听我的安慰语音？",
+            "发现：喜欢你之后，连普通的日子都变得亮晶晶的",
+            "提醒：记得吃早餐，我给你准备了喜欢的口味",
+            "坦白：我好像，比昨天更喜欢你一点了",
+            "分享：看到一句很美的诗，想第一个念给你听",
+            "发现：和你有关的一切，我都记得特别清楚",
+            "提醒：出门记得带伞，天气预报说下午有雨",
+            "坦白：我一直在等一个机会，认真对你说我喜欢你",
+            "发现：原来喜欢一个人，真的会让自己变得更好"
+        ];
+        
+        const popupTitles = [
+            "来自你的专属提醒",
+            "一条藏起来的消息",
+            "想对你说的小事",
+            "今天的心动瞬间",
+            "关于你的小发现"
+        ];
+        
+        // 适合Mac风格的柔和彩色标题栏（低饱和度）
+        const titlebarColors = [
+            'linear-gradient(to right, #5b9bd5, #4a89dc)', // 浅蓝
+            'linear-gradient(to right, #a8caba, #5d9cec)', // 蓝绿
+            'linear-gradient(to right, #d770ad, #a770ad)', // 浅紫
+            'linear-gradient(to right, #ffce54, #f6bb42)', // 浅黄
+            'linear-gradient(to right, #ed5565, #da4453)', // 浅红
+            'linear-gradient(to right, #37bc9b, #2eae8d)', // 浅绿
+            'linear-gradient(to right, #967adc, #8666dc)'  // 淡紫
+        ];
+        
+        // 生成带随机颜色的Mac弹窗
+        function createPopup(isSpecial = false) {
+            const popup = document.createElement('div');
+            popup.className = isSpecial ? 'popup center-popup' : 'popup';
+            
+            // 随机位置
+            const x = Math.random() * (window.innerWidth - 320);
+            const y = Math.random() * (window.innerHeight - 220);
+            popup.style.left = `${x}px`;
+            popup.style.top = `${y}px`;
+            
+            // 如果是特殊弹窗（我爱你）
+            if (isSpecial) {
+                const titlebarColor = 'linear-gradient(to right, #ff5f58, #ff3b30)';
+                popup.innerHTML = `
+                    <div class="popup-titlebar" style="background: ${titlebarColor}">
+                        <div class="mac-controls">
+                            <div class="mac-control-btn close-btn"></div>
+                            <div class="mac-control-btn min-btn"></div>
+                            <div class="mac-control-btn max-btn"></div>
+                        </div>
+                        <span class="popup-title">最重要的一句话</span>
+                    </div>
+                    <div class="popup-content">我爱你</div>
+                `;
+            } else {
+                // 随机标题、内容和颜色
+                const title = popupTitles[Math.floor(Math.random() * popupTitles.length)];
+                const message = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+                const titlebarColor = titlebarColors[Math.floor(Math.random() * titlebarColors.length)];
+                
+                // 带彩色标题栏的弹窗结构
+                popup.innerHTML = `
+                    <div class="popup-titlebar" style="background: ${titlebarColor}">
+                        <div class="mac-controls">
+                            <div class="mac-control-btn close-btn"></div>
+                            <div class="mac-control-btn min-btn"></div>
+                            <div class="mac-control-btn max-btn"></div>
+                        </div>
+                        <span class="popup-title">${title}</span>
+                    </div>
+                    <div class="popup-content">${message}</div>
+                `;
+            }
+            
+            document.body.appendChild(popup);
+            
+            // 关闭功能
+            const closeBtn = popup.querySelector('.close-btn');
+            closeBtn.addEventListener('click', function() {
+                popup.style.opacity = '0';
+                popup.style.transform = 'scale(0.95)';
+                setTimeout(() => popup.remove(), 200);
+            });
+            
+            // 最小化效果
+            const minBtn = popup.querySelector('.min-btn');
+            minBtn.addEventListener('click', function() {
+                popup.style.transform = 'scale(0.1) translateY(200px)';
+                popup.style.opacity = '0.6';
+                setTimeout(() => {
+                    popup.style.transform = 'scale(1) translateY(0)';
+                    popup.style.opacity = '1';
+                }, 400);
+            });
+            
+            // 最大化效果
+            const maxBtn = popup.querySelector('.max-btn');
+            maxBtn.addEventListener('click', function() {
+                if (popup.style.width === '85%') {
+                    popup.style.width = isSpecial ? '400px' : '300px';
+                    popup.style.height = 'auto';
+                } else {
+                    popup.style.width = '85%';
+                    popup.style.height = '85%';
+                }
+            });
+            
+            // 拖动功能
+            let isDragging = false;
+            let offsetX, offsetY;
+            const titlebar = popup.querySelector('.popup-titlebar');
+            
+            titlebar.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                offsetX = e.clientX - popup.offsetLeft;
+                offsetY = e.clientY - popup.offsetTop;
+                popup.style.zIndex = 200;
+                popup.style.transition = 'none';
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    const x = e.clientX - offsetX;
+                    const y = e.clientY - offsetY;
+                    if (x > 0 && x < window.innerWidth - popup.offsetWidth &&
+                        y > 0 && y < window.innerHeight - popup.offsetHeight) {
+                        popup.style.left = `${x}px`;
+                        popup.style.top = `${y}px`;
+                    }
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    popup.style.zIndex = isSpecial ? 300 : 100;
+                    popup.style.transition = 'all 0.2s ease';
+                }
+            });
+            
+            return popup;
+        }
+        
+        // 快速生成弹窗
+        const popupInterval = setInterval(createPopup, 60);
+        for (let i = 0; i < 40; i++) {
+            setTimeout(createPopup, i * 30);
+        }
+        
+        // 限制最大数量，并在生成完毕后排列成爱心形状（修改为8秒）
+        setTimeout(() => {
+            clearInterval(popupInterval);
+            
+            // 延迟一点时间确保所有弹窗都已生成
+            setTimeout(() => {
+                // 创建中心"我爱你"弹窗
+                const centerPopup = createPopup(true);
+                const centerX = (window.innerWidth - 400) / 2;
+                const centerY = (window.innerHeight - 200) / 2;
+                centerPopup.style.left = `${centerX}px`;
+                centerPopup.style.top = `${centerY}px`;
+                
+                // 获取所有普通弹窗
+                const popups = document.querySelectorAll('.popup:not(.center-popup)');
+                
+                // 将弹窗排列成爱心形状
+                arrangeInHeartShape(popups);
+            }, 500);
+        }, 8000); // 从18000修改为8000（8秒）
+        
+        // 计算爱心形状上的点并排列弹窗（缩小了爱心尺寸）
+        function arrangeInHeartShape(popups) {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const scale = Math.min(window.innerWidth, window.innerHeight) / 30; // 从5修改为8，缩小爱心尺寸
+            const count = popups.length;
+            
+            popups.forEach((popup, index) => {
+                // 使用参数方程计算爱心曲线上的点
+                const t = (index / count) * Math.PI * 2;
+                
+                // 爱心曲线参数方程
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+                
+                // 缩放并定位到屏幕中心
+                const posX = centerX + x * scale - 150; // 减去弹窗宽度的一半
+                const posY = centerY - y * scale - 100; // 减去弹窗高度的一半
+                
+                // 添加一些随机扰动使形状更自然
+                const randomX = (Math.random() - 0.5) * 40;
+                const randomY = (Math.random() - 0.5) * 40;
+                
+                // 应用位置
+                setTimeout(() => {
+                    popup.style.left = `${posX + randomX}px`;
+                    popup.style.top = `${posY + randomY}px`;
+                }, index * 30); // 错开动画时间，形成流动效果
+            });
+        }
+    </script>
+</body>
+</html>
