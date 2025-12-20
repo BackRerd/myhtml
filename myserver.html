@@ -1,333 +1,395 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>计算机技术服务 | 项目开发、Bug解决、电脑维修</title>
+  <title>JoBackRer | 全栈开发与区块链技术解决方案</title>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   
-  <!-- 配置Tailwind -->
   <script>
     tailwind.config = {
+      darkMode: 'class', // 【重要修改】改为手动控制模式
       theme: {
         extend: {
           colors: {
-            primary: '#4285F4',
-            secondary: '#34A853',
-            accent: '#FBBC05',
-            tertiary: '#EA4335',
-            quaternary: '#9C27B0',
-            success: '#00C853',
-            warning: '#FF9800',
-            info: '#03A9F4',
-            danger: '#F44336',
+            light: { bg: '#f8fafc', text: '#334155' },
+            dark: { bg: '#0f172a', text: '#cbd5e1' },
+            accent: '#10b981',
+            minecraft: '#4ade80'
           },
-          fontFamily: {
-            sans: ['PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          animation: {
+            'blob': 'blob 7s infinite',
+            'shine': 'shine 1.5s infinite',
           },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            shine: {
+              '100%': { left: '125%' }
+            }
+          }
         },
       }
     }
   </script>
-  
+
   <style type="text/tailwindcss">
     @layer utilities {
-      .card-hover {
-        @apply hover:shadow-lg hover:-translate-y-1 transition-all duration-300;
+      .glass {
+        @apply bg-white/80 dark:bg-white/5 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 shadow-sm dark:shadow-none transition-colors duration-500;
       }
-      .gradient-bg {
-        @apply bg-gradient-to-br from-primary to-primary/80;
+      .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-emerald-400;
       }
-      .card-shadow {
-        @apply shadow-md shadow-gray-100;
-      }
+    }
+    
+    body {
+      @apply bg-slate-50 dark:bg-[#050505] transition-colors duration-500;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+    .dark body {
+        background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    
+    #tsparticles {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
     }
   </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="text-slate-700 dark:text-slate-300 font-sans antialiased selection:bg-blue-500/30 transition-colors duration-500">
 
-  <main class="container mx-auto px-4 py-10">
-    <!-- 标题部分 -->
-    <div class="text-center mb-12">
-      <h1 class="text-[clamp(2.5rem,5vw,3.5rem)] font-bold mb-3 text-primary">计算机技术服务中心</h1>
-  <p class="text-gray-700 max-w-md mx-auto text-2xl">专业提供项目开发、Bug解决、疑难杂症修复和电脑故障处理，技术全面，价格合理</p>
+  <div id="tsparticles"></div>
+
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0 hidden dark:block transition-opacity duration-500">
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-blob"></div>
+    <div class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/20 rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-blob animation-delay-2000"></div>
+  </div>
+
+  <nav class="fixed w-full z-50 top-0 left-0 border-b border-gray-200/50 dark:border-white/5 bg-white/80 dark:bg-[#0f172a]/80 backdrop-blur-md transition-all duration-300">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white">
+        Jo<span class="text-blue-600 dark:text-blue-400">BackRer</span><span class="text-xs ml-2 px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-400 font-normal">DEV</span>
+      </div>
       
-      <!-- 信任标识 -->
-      <div class="mt-6 flex flex-wrap justify-center items-center gap-6">
-        <span class="inline-flex items-center text-base bg-secondary/10 text-secondary px-4 py-2 rounded-full">
-          <i class="fa fa-check-circle mr-1"></i> 更懂学校项目
+      <div class="flex items-center gap-4">
+          <button id="theme-toggle" class="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-white/20 transition-all focus:outline-none">
+            <i class="fa-solid fa-sun text-yellow-500 text-lg block dark:hidden"></i>
+            <i class="fa-solid fa-moon text-blue-300 text-lg hidden dark:block"></i>
+          </button>
+
+          <a href="#contact" class="hidden md:block px-6 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition text-sm font-medium shadow-lg shadow-blue-500/30">
+            联系工作室
+          </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="relative z-10 container mx-auto px-4 pt-36 pb-20">
+    <div class="text-center max-w-4xl mx-auto mb-20">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 text-xs font-medium mb-6">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
         </span>
-        <span class="inline-flex items-center text-base bg-accent/10 text-accent px-4 py-2 rounded-full">
-          <i class="fa fa-star mr-1"></i> 好评率98%
-        </span>
-        <span class="inline-flex items-center text-base bg-tertiary/10 text-tertiary px-4 py-2 rounded-full">
-          <i class="fa fa-clock-o mr-1"></i> 24小时响应
-        </span>
+        省赛认证技术专家 / 接单开放中
+      </div>
+      
+      <h1 class="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
+        以赛代练的<br>
+        <span class="text-gradient">硬核技术实力</span>
+      </h1>
+      
+      <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto">
+        拒绝理论派。我们提供基于赛项标准的<span class="font-medium text-slate-900 dark:text-white">高质量源码定制</span>、<span class="font-medium text-slate-900 dark:text-white">区块链应用开发</span>与<span class="font-medium text-slate-900 dark:text-white">全程技术辅导</span>。
+      </p>
+
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="#contact" class="group relative px-8 py-4 bg-blue-600 dark:bg-blue-500 text-white rounded-xl font-bold overflow-hidden transition-all hover:scale-105 hover:shadow-lg shadow-blue-500/30 dark:shadow-blue-500/50">
+          <div class="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:animate-shine"></div>
+          <span class="flex items-center gap-2">
+            开始咨询 <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+          </span>
+        </a>
+        <a href="#honors" class="px-8 py-4 glass rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-slate-700 dark:text-white">
+          <i class="fa-solid fa-medal"></i> 查看奖项
+        </a>
       </div>
     </div>
     
-    <!-- 可接项目类型 -->
-    <section class="mb-12">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
-        <h2 class="text-3xl font-bold text-gray-900">可接项目类型</h2>
-        <div class="flex flex-wrap gap-3">
-          <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 text-sm">Java</span>
-          <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 text-sm">Python</span>
-          <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 text-sm">Unity</span>
-          <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-600 text-sm">全栈&服务</span>
+    <div id="honors" class="mb-24 relative">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-3">
+                <i class="fa-solid fa-trophy text-yellow-500"></i> 技术实力背书
+            </h2>
+            <p class="text-slate-600 dark:text-slate-400">省级赛项验证，专业能力可靠</p>
         </div>
+        
+        <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto relative z-10">
+            <div class="glass p-6 rounded-2xl border-b-4 border-blue-500 relative overflow-hidden group hover:-translate-y-2 transition-all duration-300">
+                <div class="absolute -right-6 -top-6 text-blue-500/10 group-hover:text-blue-500/20 transition-colors">
+                    <i class="fa-solid fa-award text-8xl"></i>
+                </div>
+                <div class="relative">
+                    <div class="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2">2025.06 | 省级银奖</div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">省世赛选拔赛</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">高难度综合技术比拼，在激烈的竞争中脱颖而出。</p>
+                </div>
+            </div>
+            <div class="glass p-6 rounded-2xl border-b-4 border-cyan-500 relative overflow-hidden group hover:-translate-y-2 transition-all duration-300">
+                <div class="absolute -right-6 -top-6 text-cyan-500/10 group-hover:text-cyan-500/20 transition-colors">
+                    <i class="fa-solid fa-medal text-8xl"></i>
+                </div>
+                 <div class="relative">
+                    <div class="text-sm font-bold text-cyan-600 dark:text-cyan-400 mb-2">2024.09 | 省级第二名</div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">省职业技能大赛</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">区块链专项赛道，展现扎实的底层技术功底。</p>
+                 </div>
+            </div>
+            <div class="glass p-6 rounded-2xl border-b-4 border-purple-500 relative overflow-hidden group hover:-translate-y-2 transition-all duration-300">
+                <div class="absolute -right-6 -top-6 text-purple-500/10 group-hover:text-purple-500/20 transition-colors">
+                    <i class="fa-solid fa-certificate text-8xl"></i>
+                </div>
+                 <div class="relative">
+                    <div class="text-sm font-bold text-purple-600 dark:text-purple-400 mb-2">职业资格认证</div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">区块链应用操作员 (三级)</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">国家认可的职业技能等级证书，持证上岗。</p>
+                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-24 max-w-5xl mx-auto">
+      <div class="glass p-6 rounded-2xl text-center">
+        <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">98%</div>
+        <div class="text-xs text-slate-500 dark:text-slate-500 uppercase tracking-widest">好评率</div>
       </div>
-
-      <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <!-- Java项目 -->
-        <article class="bg-white rounded-2xl p-8 border border-primary/10 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-              <i class="fa fa-coffee text-primary text-xl"></i>
-            </div>
-            <h3 class="font-bold text-xl">Java相关项目</h3>
-          </div>
-          <p class="text-gray-600 text-lg mb-4">帮做各种Java毕设，包括：</p>
-          <ul class="text-lg text-gray-600 space-y-1">
-            <li class="flex items-start"><i class="fa fa-angle-right text-primary mt-1 mr-2"></i><span>SpringBoot小项目</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-primary mt-1 mr-2"></i><span>Java桌面小程序</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-primary mt-1 mr-2"></i><span>JavaWeb网站</span></li>
-          </ul>
-        </article>
-
-        <!-- Python相关项目 -->
-        <article class="bg-white rounded-2xl p-8 border border-secondary/10 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
-              <i class="fa fa-code text-secondary text-xl"></i>
-            </div>
-            <h3 class="font-bold text-xl">Python技术服务</h3>
-          </div>
-          <p class="text-gray-600 text-lg mb-4">提供Python相关服务，包括：</p>
-          <ul class="text-lg text-gray-600 space-y-1">
-            <li class="flex items-start"><i class="fa fa-angle-right text-secondary mt-1 mr-2"></i><span>数据分析与处理</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-secondary mt-1 mr-2"></i><span>爬虫程序开发</span></li>
-          </ul>
-        </article>
-
-        <!-- Unity项目 -->
-        <article class="bg-white rounded-2xl p-8 border border-accent/10 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-              <i class="fa fa-gamepad text-accent text-xl"></i>
-            </div>
-            <h3 class="font-bold text-xl">Unity相关项目</h3>
-          </div>
-          <p class="text-gray-600 text-lg mb-4">帮做各种Unity毕设，包括：</p>
-          <ul class="text-lg text-gray-600 space-y-1">
-            <li class="flex items-start"><i class="fa fa-angle-right text-accent mt-1 mr-2"></i><span>2D/3D小游戏</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-accent mt-1 mr-2"></i><span>毕业设计项目</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-accent mt-1 mr-2"></i><span>简单交互设计</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-accent mt-1 mr-2"></i><span>完整案例开发</span></li>
-          </ul>
-        </article>
-
-        <!-- 区块链相关项目 -->
-        <article class="bg-white rounded-2xl p-8 border border-tertiary/10 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-12 h-12 bg-tertiary/10 rounded-xl flex items-center justify-center">
-              <i class="fa fa-link text-tertiary text-xl"></i>
-            </div>
-            <h3 class="font-bold text-xl">区块链相关项目</h3>
-          </div>
-          <p class="text-gray-600 text-lg mb-4">提供区块链相关服务，包括：</p>
-          <ul class="text-lg text-gray-600 space-y-1">
-            <li class="flex items-start"><i class="fa fa-angle-right text-tertiary mt-1 mr-2"></i><span>智能合约开发</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-tertiary mt-1 mr-2"></i><span>区块链应用开发</span></li>
-          </ul>
-        </article>
-
-        <!-- 故障排除与维修 -->
-        <article class="bg-white rounded-2xl p-8 border border-info/10 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-12 h-12 bg-info/10 rounded-xl flex items-center justify-center">
-              <i class="fa fa-wrench text-info text-xl"></i>
-            </div>
-            <h3 class="font-bold text-xl">故障排除与维修</h3>
-          </div>
-          <p class="text-gray-600 text-lg mb-4">提供各种电脑与软件问题解决，包括：</p>
-          <ul class="text-lg text-gray-600 space-y-1">
-            <li class="flex items-start"><i class="fa fa-angle-right text-info mt-1 mr-2"></i><span>代码Bug修复</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-info mt-1 mr-2"></i><span>软件疑难杂症解决</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-info mt-1 mr-2"></i><span>电脑蓝屏死机修复</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-info mt-1 mr-2"></i><span>系统优化与维护</span></li>
-          </ul>
-        </article>
-
-        <!-- 前后端分离项目 -->
-        <article class="bg-white rounded-2xl p-8 border border-quaternary/10 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-12 h-12 bg-quaternary/10 rounded-xl flex items-center justify-center">
-              <i class="fa fa-code-fork text-quaternary text-xl"></i>
-            </div>
-            <h3 class="font-bold text-xl">前后端分离项目</h3>
-          </div>
-          <p class="text-gray-600 text-lg mb-4">帮做SpringBoot+Vue项目，包括：</p>
-          <ul class="text-lg text-gray-600 space-y-1">
-            <li class="flex items-start"><i class="fa fa-angle-right text-quaternary mt-1 mr-2"></i><span>管理系统</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-quaternary mt-1 mr-2"></i><span>校园服务平台</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-quaternary mt-1 mr-2"></i><span>在线教育网站</span></li>
-            <li class="flex items-start"><i class="fa fa-angle-right text-quaternary mt-1 mr-2"></i><span>定制需求</span></li>
-          </ul>
-        </article>
-
-        <!-- 配套服务 -->
-        <article class="bg-white rounded-2xl p-8 border border-success/10 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
-              <i class="fa fa-handshake-o text-success text-xl"></i>
-            </div>
-            <h3 class="font-bold text-xl">额外低价服务</h3>
-          </div>
-          <p class="text-gray-600 text-lg mb-4">接单后这些都包：</p>
-          <ul class="text-lg text-gray-600 space-y-1">
-            <li class="flex items-start"><i class="fa fa-check text-success mt-1 mr-2"></i><span>写完整项目文档</span></li>
-            <li class="flex items-start"><i class="fa fa-check text-success mt-1 mr-2"></i><span>远程语音讲代码</span></li>
-            <li class="flex items-start"><i class="fa fa-check text-success mt-1 mr-2"></i><span>做答辩PPT+指导</span></li>
-            <li class="flex items-start"><i class="fa fa-check text-success mt-1 mr-2"></i><span>老师提意见免费改</span></li>
-          </ul>
-        </article>
+      <div class="glass p-6 rounded-2xl text-center">
+        <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">24h</div>
+        <div class="text-xs text-slate-500 dark:text-slate-500 uppercase tracking-widest">极速响应</div>
       </div>
-    </section>
+      <div class="glass p-6 rounded-2xl text-center">
+        <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">赛级</div>
+        <div class="text-xs text-slate-500 dark:text-slate-500 uppercase tracking-widest">交付标准</div>
+      </div>
+      <div class="glass p-6 rounded-2xl text-center">
+        <div class="text-3xl font-bold text-slate-900 dark:text-white mb-1">Bug</div>
+        <div class="text-xs text-slate-500 dark:text-slate-500 uppercase tracking-widest">售后包修</div>
+      </div>
+    </div>
 
-    <!-- Minecraft服务器服务 -->
-    <section class="bg-white rounded-2xl p-10 shadow-md border border-primary/10 mb-12">
-      <div class="flex flex-col lg:flex-row gap-10 items-center">
-        <div class="lg:w-2/3">
-          <p class="text-sm font-semibold text-primary uppercase tracking-widest mb-3">Minecraft服务器模组 / 插件定制</p>
-          <h3 class="text-3xl font-bold text-gray-900 mb-4">开服教学 · 模组/插件定制 · 整合包联机</h3>
-          <p class="text-gray-600 text-lg mb-5">覆盖1.16-最新版本，支持整套服务器搭建、玩法策划、性能调优与陪跑教学，适合个人、小团队与社团服务器。</p>
-          <div class="grid md:grid-cols-2 gap-4">
-            <ul class="space-y-2 text-gray-700 text-base">
-              <li class="flex"><i class="fa fa-angle-right text-primary mt-1 mr-2"></i>手把手Minecraft开服教程</li>
-              <li class="flex"><i class="fa fa-angle-right text-primary mt-1 mr-2"></i>服务器插件/模组定制（1.16+）</li>
-              <li class="flex"><i class="fa fa-angle-right text-primary mt-1 mr-2"></i>新手0基础开服陪跑</li>
-            </ul>
-            <ul class="space-y-2 text-gray-700 text-base">
-              <li class="flex"><i class="fa fa-angle-right text-primary mt-1 mr-2"></i>整合资源打包与下载</li>
-              <li class="flex"><i class="fa fa-angle-right text-primary mt-1 mr-2"></i>联机教程&网络优化</li>
-              <li class="flex"><i class="fa fa-angle-right text-primary mt-1 mr-2"></i>整套服务器定制托管</li>
+    <div id="features" class="mb-24">
+      <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
+        <i class="fa-solid fa-code text-blue-600 dark:text-blue-400"></i> 技术服务栈
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[250px]">
+        
+        <div class="group glass p-8 rounded-3xl md:col-span-2 lg:col-span-2 row-span-2 flex flex-col justify-between hover:border-blue-500/50 transition-all duration-300 relative overflow-hidden">
+          <div class="absolute right-0 top-0 p-32 bg-blue-100/50 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-blue-200/50 dark:hidden"></div>
+          <div class="hidden dark:block absolute right-0 top-0 p-32 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-blue-500/20"></div>
+          
+          <div>
+            <div class="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 text-2xl text-blue-600 dark:text-white border border-gray-200 dark:border-white/10 shadow-md dark:shadow-xl">
+              <i class="fa-brands fa-java"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Java 全栈解决方案</h3>
+            <p class="text-slate-600 dark:text-slate-400 mb-6 max-w-md">无论是 SpringBoot 微服务架构，还是 Vue 前后端分离系统，我们都能提供符合企业规范的源码。</p>
+            <ul class="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> SSM / SpringBoot / SpringCloud</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> 复杂业务逻辑实现与数据库优化</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> 本地环境部署 (IDEA/Eclipse)</li>
             </ul>
           </div>
         </div>
-        <div class="lg:w-1/3 bg-primary/5 border border-primary/20 rounded-2xl p-6">
-          <h4 class="text-xl font-semibold text-primary mb-2">近期作品 · ProfessionCustom</h4>
-          <p class="text-gray-700 mb-4">高度自定义生物属性词条 + 武器词条升级系统 + 职业选择与装备限制模组，即将在 MC 模组社区发布。</p>
-          <ul class="space-y-2 text-gray-600 text-base">
-            <li class="flex"><i class="fa fa-check text-primary mt-1 mr-2"></i>可视化职业天赋树</li>
-            <li class="flex"><i class="fa fa-check text-primary mt-1 mr-2"></i>装备绑定 & 权限管控</li>
-            <li class="flex"><i class="fa fa-check text-primary mt-1 mr-2"></i>兼容整合包交付</li>
-          </ul>
-        </div>
-      </div>
-      <div class="grid md:grid-cols-3 gap-6 mt-8">
-        <div class="p-5 rounded-xl border border-primary/10 bg-primary/5">
-          <p class="text-sm font-semibold text-primary mb-2">开服陪跑</p>
-          <p class="text-gray-700">从环境搭建、白名单设置到权限分组，提供实时语音指导与资料。</p>
-        </div>
-        <div class="p-5 rounded-xl border border-secondary/10 bg-secondary/5">
-          <p class="text-sm font-semibold text-secondary mb-2">整合包与联机</p>
-          <p class="text-gray-700">定制整合包、性能调优、多人联机教程，支持FastBuilder、PCL2等启动器。</p>
-        </div>
-        <div class="p-5 rounded-xl border border-accent/10 bg-accent/5">
-          <p class="text-sm font-semibold text-accent mb-2">服务器定制</p>
-          <p class="text-gray-700">玩法策划、经济系统、任务副本、跨服传送等高级功能一站式制作。</p>
-        </div>
-      </div>
-    </section>
 
-    <!-- 桌面美化与系统维护 -->
-    <section class="rounded-2xl p-10 mb-12 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg">
-      <p class="text-sm font-semibold text-white/70 uppercase tracking-widest mb-3">电脑桌面美化 · 系统维护</p>
-      <h3 class="text-3xl font-bold mb-6">桌面设计、磁盘清理、系统刷机、软件代下</h3>
-      <p class="text-white/80 text-lg max-w-3xl mb-8">除编程服务外，还提供一站式电脑体验升级：桌面主题定制、图标排布、壁纸套件、磁盘深度清理、驱动重装、系统刷机与常用软件代下配置，适配日常办公与学习需求。</p>
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div class="bg-white/5 border border-white/10 rounded-xl p-5">
-          <p class="text-base font-semibold mb-2">桌面美化</p>
-          <p class="text-sm text-white/80">Rainmeter/美化包搭配、主题色统一、图标整理。</p>
+        <div class="group glass p-6 rounded-3xl hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
+          <div class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-emerald-500 dark:text-emerald-400 text-xl border border-gray-200 dark:border-white/10 shadow-sm">
+            <i class="fa-brands fa-python"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Python 数据与爬虫</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">数据分析、可视化大屏、自动化脚本或 Django 网站。</p>
+          </div>
         </div>
-        <div class="bg-white/5 border border-white/10 rounded-xl p-5">
-          <p class="text-base font-semibold mb-2">磁盘清理</p>
-          <p class="text-sm text-white/80">系统垃圾深度清理，空间优化+分区建议。</p>
-        </div>
-        <div class="bg-white/5 border border-white/10 rounded-xl p-5">
-          <p class="text-base font-semibold mb-2">系统刷机</p>
-          <p class="text-sm text-white/80">Win11/Win10重装、驱动更新、开机优化。</p>
-        </div>
-        <div class="bg-white/5 border border-white/10 rounded-xl p-5">
-          <p class="text-base font-semibold mb-2">软件代下</p>
-          <p class="text-sm text-white/80">学习/设计/办公软件一键安装与环境配置。</p>
-        </div>
-      </div>
-    </section>
 
-    <!-- 为什么选择我们 -->
-    <div class="bg-white rounded-xl p-8 shadow-md mb-12">
-      <h3 class="font-bold text-2xl mb-6 text-center text-primary">为什么选择我们的技术服务？</h3>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="flex flex-col items-center text-center p-5 rounded-lg border border-primary/10 bg-primary/5 hover:shadow-lg transition-all duration-300">
-          <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-3">
-            <i class="fa fa-bolt text-primary text-2xl"></i>
+        <div class="group glass p-6 rounded-3xl hover:border-purple-500/50 transition-all duration-300 flex flex-col justify-between">
+          <div class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-purple-500 dark:text-purple-400 text-xl border border-gray-200 dark:border-white/10 shadow-sm">
+            <i class="fa-brands fa-unity"></i>
           </div>
-          <p class="font-medium text-primary text-lg mb-1">技术全面</p>
-          <p class="text-gray-700 text-lg">覆盖开发、调试、维修等全方位技术支持</p>
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Unity 游戏开发</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">2D/3D 游戏 Demo 制作，C# 脚本编写，物理引擎交互。</p>
+          </div>
         </div>
-        <div class="flex flex-col items-center text-center p-5 rounded-lg border border-secondary/10 bg-secondary/5 hover:shadow-lg transition-all duration-300">
-          <div class="w-14 h-14 bg-secondary/10 rounded-full flex items-center justify-center mb-3">
-            <i class="fa fa-clock-o text-secondary text-2xl"></i>
+
+        <div class="group glass p-6 rounded-3xl md:col-span-2 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-yellow-500/50 transition-all duration-300 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-transparent dark:to-transparent">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shrink-0">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white">学生无忧交付标准</h3>
+              <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">赛级选手的服务品质</p>
+            </div>
           </div>
-          <p class="font-medium text-secondary text-lg mb-1">快速响应</p>
-          <p class="text-gray-700 text-lg">24小时内响应，紧急问题优先处理</p>
+          <div class="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-slate-700 dark:text-slate-300">
+            <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-yellow-500"></i> 赠送开发文档</div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-yellow-500"></i> 远程 ToDesk 部署</div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-yellow-500"></i> 核心逻辑语音讲解</div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-yellow-500"></i> 售后免费 Debug</div>
+          </div>
         </div>
-        <div class="flex flex-col items-center text-center p-5 rounded-lg border border-accent/10 bg-accent/5 hover:shadow-lg transition-all duration-300">
-          <div class="w-14 h-14 bg-accent/10 rounded-full flex items-center justify-center mb-3">
-            <i class="fa fa-check-circle text-accent text-2xl"></i>
+
+        <div class="group glass p-6 rounded-3xl flex flex-col justify-center hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer">
+          <div class="flex items-center justify-between mb-4">
+            <i class="fa-solid fa-screwdriver-wrench text-slate-400 text-xl"></i>
+            <i class="fa-solid fa-arrow-right -rotate-45 text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors"></i>
           </div>
-          <p class="font-medium text-accent text-lg mb-1">解决彻底</p>
-          <p class="text-gray-700 text-lg">不仅修复表面问题，还提供优化建议</p>
+          <h3 class="font-bold text-slate-900 dark:text-white">IT 维护支持</h3>
+          <p class="text-xs text-slate-500 mt-1">环境配置 · 报错修复</p>
         </div>
       </div>
     </div>
-    
-    <!-- 联系咨询 -->
-    <div id="contact" class="gradient-bg rounded-xl p-8 text-center shadow-lg text-white">
-      <h3 class="font-bold text-3xl mb-4">专业技术服务，随时为您提供支持</h3>
-      <p class="text-white/90 mb-8 max-w-md mx-auto text-lg">无论您需要项目开发、Bug修复、疑难杂症解决还是电脑维修，请告诉我们您的具体需求和时间要求，我们将为您免费评估并提供专业解决方案</p>
-      
-      <div class="flex flex-col sm:flex-row justify-center gap-5">
-        <a href="javascript:;" class="bg-white text-primary font-medium px-8 py-4 rounded-lg flex items-center justify-center hover:shadow-xl transition-all">
-          <i class="fa fa-weixin mr-2 text-xl"></i> 微信咨询：BackRer
-        </a>
-        <a href="javascript:;" class="bg-primary/30 backdrop-blur-sm text-white border border-white/30 px-8 py-4 rounded-lg flex items-center justify-center hover:bg-primary/40 transition-all">
-          <i class="fa fa-phone mr-2 text-xl"></i> QQ：3100026750
-        </a>
+
+    <div class="relative rounded-3xl overflow-hidden bg-slate-900 border border-gray-200 dark:border-white/10 mb-24 group shadow-xl">
+      <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+      <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-minecraft/10 rounded-full blur-[80px] group-hover:bg-minecraft/20 transition-all duration-700"></div>
+
+      <div class="relative z-10 grid md:grid-cols-2 gap-10 p-8 md:p-12 items-center">
+        <div>
+          <span class="px-3 py-1 rounded bg-minecraft/20 text-minecraft text-xs font-bold tracking-widest uppercase mb-4 inline-block">Minecraft Server Expert</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">服务器开服 & 模组定制</h2>
+          <p class="text-slate-400 mb-8 leading-relaxed">
+            不仅仅是开服。我们提供从 <span class="text-minecraft">Mod 开发</span>、插件编写到高性能整合包制作的一站式服务。
+          </p>
+        </div>
+        <div class="relative h-64 md:h-full min-h-[200px] rounded-2xl bg-black/50 border border-white/10 p-6 backdrop-blur-sm flex flex-col justify-center items-center text-center">
+          <i class="fa-solid fa-terminal text-6xl text-gray-700 mb-4 group-hover:text-minecraft transition-colors duration-500"></i>
+          <p class="font-mono text-sm text-minecraft mb-2">> Initializing Server...</p>
+          <p class="font-mono text-sm text-white animate-pulse">> Ready to Start.</p>
+        </div>
       </div>
-      
-      <p class="text-white/70 mt-6 text-lg">个人开发24小时内响应，技术全面，服务周到，价格合理</p>
     </div>
+
+    <div id="contact" class="max-w-3xl mx-auto text-center pb-20">
+      <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-6">准备好解决问题了吗？</h2>
+      
+      <div class="glass p-8 rounded-3xl flex flex-col md:flex-row items-center justify-around gap-8 border-blue-200/50 dark:border-blue-500/20 bg-blue-50/50 dark:bg-blue-500/5">
+        <div class="flex flex-col items-center gap-3 group cursor-pointer">
+          <div class="w-16 h-16 rounded-2xl bg-[#07C160] flex items-center justify-center text-white text-3xl shadow-lg shadow-green-200/50 dark:shadow-green-900/50 group-hover:scale-110 transition-transform">
+            <i class="fa-brands fa-weixin"></i>
+          </div>
+          <div class="text-center">
+            <p class="text-xs text-slate-500 mb-1">WeChat</p>
+            <p class="text-xl font-bold text-slate-900 dark:text-white select-all">BackRer</p>
+          </div>
+        </div>
+        <div class="w-px h-16 bg-gray-200 dark:bg-white/10 hidden md:block"></div>
+        <div class="flex flex-col items-center gap-3 group cursor-pointer">
+          <div class="w-16 h-16 rounded-2xl bg-[#34A853] flex items-center justify-center text-white text-3xl shadow-lg shadow-blue-200/50 dark:shadow-blue-900/50 group-hover:scale-110 transition-transform" style="background-color: #4285F4;">
+            <i class="fa-brands fa-qq"></i>
+          </div>
+          <div class="text-center">
+            <p class="text-xs text-slate-500 mb-1">QQ Chat</p>
+            <p class="text-xl font-bold text-slate-900 dark:text-white select-all">3100026750</p>
+          </div>
+        </div>
+      </div>
+      <p class="mt-8 text-xs text-slate-500">
+        © 2025 JoBackRer Studio. All Code Reserved.
+      </p>
+    </div>
+
   </main>
   
-  <!-- 页脚 -->
-  <footer class="bg-gray-800 text-white mt-16 py-8">
-    <div class="container mx-auto px-4">
-      <div class="flex flex-col items-center">
-        <div class="flex items-center mb-4">
-        </div>
-        <p class="text-gray-300 mb-6 text-center max-w-md text-lg">专业计算机技术服务中心 | 项目开发、Bug解决、电脑维修一站式服务</p>
-        <div class="flex space-x-4 mb-4">
-          <a href="javascript:;" class="text-white hover:text-primary transition-colors"><i class="fa fa-weixin text-xl"></i></a>
-          <a href="javascript:;" class="text-white hover:text-primary transition-colors"><i class="fa fa-phone text-xl"></i></a>
-          <a href="javascript:;" class="text-white hover:text-primary transition-colors"><i class="fa fa-envelope text-xl"></i></a>
-        </div>
-        <p class="text-gray-400">© 2024 JoBackRer</p>
-      </div>
-    </div>
-  </footer>
+  <script>
+    // 逻辑：手动切换 + 自动保存 + 粒子特效适配
+    const toggleBtn = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    let particlesContainer;
+
+    // 1. 初始化粒子函数
+    async function initParticles(isDark) {
+        const color = isDark ? "#3b82f6" : "#94a3b8"; // 深色用蓝，浅色用灰
+        const linkColor = isDark ? "#ffffff" : "#94a3b8";
+        
+        // 如果已经存在，销毁旧的
+        if (tsParticles.domItem(0)) {
+            tsParticles.domItem(0).destroy();
+        }
+
+        await tsParticles.load("tsparticles", {
+            fps_limit: 60,
+            interactivity: {
+                detectsOn: "canvas",
+                events: {
+                    onHover: { enable: true, mode: "repulse" },
+                    resize: true
+                },
+                modes: { repulse: { distance: 100, duration: 0.4 } }
+            },
+            particles: {
+                color: { value: color },
+                links: {
+                    color: linkColor,
+                    distance: 150,
+                    enable: true,
+                    opacity: 0.1,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1, // 粒子速度
+                },
+                number: { value: 60 },
+                opacity: { value: 0.3 },
+                shape: { type: "circle" },
+                size: { value: { min: 1, max: 3 } }
+            },
+            detectRetina: true
+        });
+    }
+
+    // 2. 检查本地存储或系统偏好
+    function checkTheme() {
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            initParticles(true);
+        } else {
+            html.classList.remove('dark');
+            initParticles(false);
+        }
+    }
+
+    // 3. 点击切换
+    toggleBtn.addEventListener('click', () => {
+        if (html.classList.contains('dark')) {
+            html.classList.remove('dark');
+            localStorage.theme = 'light';
+            initParticles(false);
+        } else {
+            html.classList.add('dark');
+            localStorage.theme = 'dark';
+            initParticles(true);
+        }
+    });
+
+    // 页面加载时执行
+    checkTheme();
+  </script>
+
 </body>
 </html>
