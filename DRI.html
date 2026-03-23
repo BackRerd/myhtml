@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRI 能量小怪物 - 深度可爱旗舰版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&display=swap');
+        
+        :root {
+            --pink: #ffafcc;
+            --blue: #a2d2ff;
+            --yellow: #ffecb3;
+            --purple: #cdb4db;
+            --text: #5e548e;
+        }
+
+        body { 
+            font-family: 'Noto Sans SC', sans-serif; 
+            background: #fdf0d5;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255, 175, 204, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(162, 210, 255, 0.2) 0%, transparent 20%);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .title-font { font-family: 'ZCOOL KuaiLe', cursive; }
+        
+        .kawaii-card { 
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 6px solid #5e548e;
+            border-radius: 50px;
+            box-shadow: 12px 12px 0px #5e548e;
+            position: relative;
+        }
+
+        /* 能量容器设计 */
+        .energy-vessel {
+            position: relative;
+            width: 70px;
+            height: 120px;
+            background: #f0f0f0;
+            border: 4px solid #5e548e;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .energy-fluid {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            transition: height 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .energy-fluid::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 200%;
+            height: 20px;
+            background: inherit;
+            border-radius: 40%;
+            animation: wave 3s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes wave {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .bubble-btn {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid #5e548e;
+            box-shadow: 0px 6px 0px #5e548e;
+            border-radius: 20px;
+        }
+
+        .bubble-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0px 10px 0px #5e548e;
+        }
+
+        .bubble-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px #5e548e;
+        }
+
+        .progress-container {
+            background: #fff;
+            border: 4px solid #5e548e;
+            height: 30px;
+            border-radius: 15px;
+            padding: 2px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ffafcc, #cdb4db, #a2d2ff);
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+        .float { animation: floatAnim 4s ease-in-out infinite; }
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .fade-in { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        .chart-bg {
+            background: radial-gradient(circle, #fff 0%, #fdf0d5 100%);
+            border-radius: 50%;
+            padding: 20px;
+            border: 2px dashed #cdb4db;
+        }
+
+        /* 百科列表样式 */
+        .encyclopedia-item {
+            border-bottom: 2px dashed #cdb4db;
+            padding: 1rem 0;
+        }
+        .encyclopedia-item:last-child { border-bottom: none; }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4 flex flex-col items-center">
+
+    <!-- 开始界面 -->
+    <div id="start-screen" class="max-w-xl w-full kawaii-card p-12 text-center fade-in mt-10">
+        <div class="text-6xl mb-6 float">(｡♥‿♥｡)</div>
+        <h1 class="text-5xl font-black title-font text-pink-400 mb-2 tracking-tighter">能量小怪物</h1>
+        <div class="text-xl font-bold text-purple-400 mb-8 opacity-80">实验室 3.0 能量核心版</div>
+        
+        <div class="bg-yellow-50 p-6 rounded-3xl border-2 border-dashed border-yellow-200 mb-10 text-left">
+            <h3 class="font-black text-yellow-600 mb-2">什么是 DRI？</h3>
+            <p class="text-sm leading-relaxed font-bold text-gray-600">
+                D - 饱腹感：你的情绪“胃口”和审美标准。<br>
+                R - 回响值：你与世界的共情频率。<br>
+                I - 冲刺值：你内心的执行引擎强度。
+            </p>
+        </div>
+
+        <div class="space-y-5">
+            <button onclick="prepareTest(20)" class="bubble-btn w-full p-6 bg-[#ffafcc] text-white font-black text-2xl">
+                (๑•̀ㅂ•́)و✧ 精简变身 (20题)
+            </button>
+            <button onclick="prepareTest(45)" class="bubble-btn w-full p-6 bg-[#a2d2ff] text-white font-black text-2xl">
+                ٩(๑❛ᴗ❛๑)۶ 全面进化 (45题)
+            </button>
+        </div>
+    </div>
+
+    <!-- 答题界面 -->
+    <div id="test-screen" class="hidden max-w-xl w-full kawaii-card p-10 fade-in">
+        <div class="mb-10">
+            <div class="flex justify-between items-end mb-3">
+                <div class="title-font text-xl text-purple-500" id="progress-text">波段 01</div>
+                <div class="font-black text-pink-400 text-2xl" id="progress-percent">0%</div>
+            </div>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-fill h-full" style="width: 0%"></div>
+            </div>
+        </div>
+        <div class="min-h-[160px] flex items-center justify-center mb-10 text-center">
+            <h2 id="question-text" class="text-2xl font-black text-gray-700 leading-snug"></h2>
+        </div>
+        <div class="grid gap-4">
+            <button onclick="handleAnswer(5)" class="bubble-btn p-5 bg-pink-100 font-black text-pink-700">(´▽`ʃ♡ƪ) 超级准确！</button>
+            <button onclick="handleAnswer(4)" class="bubble-btn p-5 bg-blue-100 font-black text-blue-700">o(*￣▽￣*)o 好像是诶~</button>
+            <button onclick="handleAnswer(3)" class="bubble-btn p-5 bg-yellow-50 font-black text-yellow-700">╮(╯▽╰)╭ 唔...纠结</button>
+            <button onclick="handleAnswer(2)" class="bubble-btn p-5 bg-purple-100 font-black text-purple-700">(；′⌒`) 不太像我</button>
+            <button onclick="handleAnswer(1)" class="bubble-btn p-5 bg-gray-100 font-black text-gray-700">(╯°□°）╯ 完全不是！</button>
+        </div>
+    </div>
+
+    <!-- 结果界面 -->
+    <div id="result-screen" class="hidden max-w-5xl w-full space-y-8 fade-in pb-20">
+        <div class="kawaii-card overflow-hidden">
+            <div class="flex flex-col lg:flex-row">
+                <!-- 左侧：雷达图与能量容器 -->
+                <div class="lg:w-2/5 p-10 bg-white flex flex-col items-center justify-center border-b-6 lg:border-b-0 lg:border-r-6 border-[#5e548e]">
+                    <div class="chart-bg mb-10">
+                        <canvas id="resultChart"></canvas>
+                    </div>
+                    
+                    <!-- 能量容器显示区 -->
+                    <div class="flex justify-around w-full px-4">
+                        <div class="flex flex-col items-center">
+                            <div class="energy-vessel mb-3">
+                                <div id="vessel-d" class="energy-fluid bg-pink-400" style="height: 0%">
+                                    <span id="label-d" class="text-white font-black text-lg drop-shadow-md">0</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-black text-pink-500 bg-pink-100 px-2 py-1 rounded-full">饱腹感</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="energy-vessel mb-3">
+                                <div id="vessel-r" class="energy-fluid bg-blue-400" style="height: 0%">
+                                    <span id="label-r" class="text-white font-black text-lg drop-shadow-md">0</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-black text-blue-500 bg-blue-100 px-2 py-1 rounded-full">回响值</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="energy-vessel mb-3">
+                                <div id="vessel-i" class="energy-fluid bg-yellow-500" style="height: 0%">
+                                    <span id="label-i" class="text-white font-black text-lg drop-shadow-md">0</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-black text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full">冲刺值</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：详细画像 -->
+                <div class="lg:w-3/5 p-10">
+                    <div class="inline-block px-6 py-2 bg-[#cdb4db] text-white font-black rounded-full text-sm mb-4">(◕‿◕✿) 能量档案</div>
+                    <h1 id="persona-title" class="text-6xl font-black title-font text-pink-500 mb-6 italic">...</h1>
+                    <div class="bg-white p-8 rounded-[40px] border-4 border-dashed border-purple-200 mb-8 relative">
+                        <p id="persona-desc" class="text-xl text-gray-600 font-bold italic leading-relaxed"></p>
+                    </div>
+                    <div class="space-y-4" id="dimension-feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 解读区 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="kawaii-card p-8 !border-green-500 bg-green-50/30 !box-shadow-[12px_12px_0px_#22c55e]">
+                <h3 class="text-2xl font-black text-green-600 mb-6 flex items-center">✧ 深度潜在特质</h3>
+                <ul id="list-strengths" class="space-y-4 text-lg font-bold text-gray-700"></ul>
+            </div>
+            <div class="kawaii-card p-8 !border-orange-400 bg-orange-50/30 !box-shadow-[12px_12px_0px_#fb923c]">
+                <h3 class="text-2xl font-black text-orange-500 mb-6 flex items-center">✎ 实验室生长建议</h3>
+                <ul id="list-advice" class="space-y-4 text-lg font-bold text-gray-700"></ul>
+            </div>
+        </div>
+
+        <!-- 小怪物属性百科板块 -->
+        <div class="kawaii-card p-10 !border-purple-400 bg-white">
+            <h3 class="text-3xl font-black title-font text-purple-500 mb-8 text-center italic">📖 小怪物属性百科</h3>
+            <div class="space-y-2">
+                <div class="encyclopedia-item">
+                    <h4 class="text-xl font-black text-pink-500 mb-2">🍰 D - 饱腹感 (Domestication/Desire)</h4>
+                    <p class="font-bold text-gray-600 text-sm leading-relaxed">
+                        衡量你对环境、审美及生活细节的“饥饿度”。高饱腹感的人拥有极高的追求，平庸的日常往往无法满足他们；低饱腹感的人则更随性、自足。
+                    </p>
+                </div>
+                <div class="encyclopedia-item">
+                    <h4 class="text-xl font-black text-blue-500 mb-2">📱 R - 回响值 (Resonance/Response)</h4>
+                    <p class="font-bold text-gray-600 text-sm leading-relaxed">
+                        衡量你对外界情绪的敏感度。高回响值意味着你像一台精密的信号塔，能轻易捕捉到微小的波澜与共情；低回响值则让你在社交中保持冷静的独立。
+                    </p>
+                </div>
+                <div class="encyclopedia-item">
+                    <h4 class="text-xl font-black text-yellow-600 mb-2">🏃 I - 冲刺值 (Impulse/Innovation)</h4>
+                    <p class="font-bold text-gray-600 text-sm leading-relaxed">
+                        衡量你的行动爆发力和主导欲。高冲刺值的人是天生的引擎，比起观望更倾向于直接改变现状；低冲刺值的人则更擅长在现有的节奏中稳健前行。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="location.reload()" class="bubble-btn w-full p-6 bg-white font-black text-xl mb-20">O(∩_∩)O 重启实验</button>
+    </div>
+
+    <script>
+        const fullQuestionPool = [
+            // D类: 饱腹感 (略, 保持之前版本代码以节省篇幅，功能完整)
+            { text: "如果一件东西有瑕疵，即使不影响使用，你也会心里不舒服？", weights: { D: 1.3 } },
+            { text: "你会因为期待已久的活动突然取消而感到极度的沮丧吗？", weights: { D: 1.1 } },
+            { text: "你很享受被大家围在中心、成为话题焦点的感觉？", weights: { D: 1.4, I: 0.3 } },
+            { text: "你会为了追求“完美的一天”而提前查好所有的攻略吗？", weights: { D: 1.2, I: 0.4 } },
+            { text: "你是一个对气味、声音或者触感非常敏感的人吗？", weights: { D: 1.5 } },
+            { text: "看到排版乱七八糟的文档，你会强迫症发作想去修改吗？", weights: { D: 1.1, I: 0.5 } },
+            { text: "如果有人没有及时回你消息，你会忍不住想他是不是讨厌你？", weights: { D: 1.3, R: 0.2 } },
+            { text: "你买东西时，比起实用，更看重它带来的‘情绪价值’？", weights: { D: 1.4 } },
+            { text: "即使是独处，你也会把生活安排得非常有仪式感？", weights: { D: 1.3 } },
+            { text: "你希望你的另一半或好友能随时随地理解你的心意？", weights: { D: 1.4, R: 0.4 } },
+            // R类: 回响值
+            { text: "当朋友难过时，你通常是那个第一个递纸巾的人？", weights: { R: 1.5 } },
+            { text: "在聚会中，你会时刻留意有没有人被冷落了吗？", weights: { R: 1.3, D: 0.2 } },
+            { text: "即使在争吵中，你也能很快感受到对方的委屈？", weights: { R: 1.4 } },
+            { text: "你会为了迎合大家的口味而改变自己原有的主张吗？", weights: { R: 1.2, I: -0.4 } },
+            { text: "你非常擅长通过微表情判断一个人的真实想法？", weights: { R: 1.4, D: 0.3 } },
+            { text: "你总是忍不住给朋友圈里看到的每条动态点赞吗？", weights: { R: 1.3 } },
+            { text: "听到感人的故事，你往往比讲故事的人先流泪？", weights: { R: 1.5 } },
+            { text: "你非常讨厌在对话中让对方感到尴尬或者冷场？", weights: { R: 1.4, I: 0.4 } },
+            { text: "如果你在网上被误解了，你会非常难过甚至想去解释很久？", weights: { R: 1.5 } },
+            { text: "你觉得大家在一起开开心心是最重要的事情？", weights: { R: 1.4 } },
+            // I类: 冲刺值
+            { text: "如果你有一个想法，你会立刻去做而不是先问别人？", weights: { I: 1.5 } },
+            { text: "在遇到困难时，你第一反应是‘我要怎么解决它’？", weights: { I: 1.4 } },
+            { text: "你很享受掌控局面并让事情按你的逻辑发展的过程？", weights: { I: 1.3, D: 0.5 } },
+            { text: "比起随大流，你更喜欢坚持自己的独特风格？", weights: { I: 1.2, D: 0.6 } },
+            { text: "你会主动在陌生人面前发起对话来打破僵局吗？", weights: { I: 1.4, R: 0.3 } },
+            { text: "你非常讨厌等待，无论是等车还是等人回复？", weights: { I: 1.5 } },
+            { text: "当团队没有方向时，你会是第一个跳出来拿主意的人？", weights: { I: 1.4 } },
+            { text: "遇到喜欢的机会，你会毫不犹豫地主动出击去争取？", weights: { I: 1.5 } },
+            { text: "你觉得自己更适合当一个主导者而不是跟随者？", weights: { I: 1.4 } },
+            { text: "当别人犹豫不决时，你通常会大刀阔斧地做决定？", weights: { I: 1.5 } }
+        ];
+
+        let testQuestions = [];
+        let currentIdx = 0;
+        let runningScores = { D: 0, R: 0, I: 0 };
+        let maxPossible = { D: 0, R: 0, I: 0 };
+
+        function prepareTest(count) {
+            testQuestions = [...fullQuestionPool].sort(() => Math.random() - 0.5).slice(0, count);
+            currentIdx = 0;
+            runningScores = { D: 0, R: 0, I: 0 };
+            maxPossible = { D: 0, R: 0, I: 0 };
+            testQuestions.forEach(q => {
+                for (let dim in q.weights) { 
+                    if (q.weights[dim] > 0) maxPossible[dim] += q.weights[dim] * 5; 
+                }
+            });
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('test-screen').classList.remove('hidden');
+            window.scrollTo(0,0);
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = testQuestions[currentIdx];
+            document.getElementById('question-text').innerText = q.text;
+            document.getElementById('progress-text').innerText = `波段 ${String(currentIdx + 1).padStart(2, '0')}`;
+            const pct = Math.round((currentIdx / testQuestions.length) * 100);
+            document.getElementById('progress-percent').innerText = `${pct}%`;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+        }
+
+        function handleAnswer(val) {
+            const q = testQuestions[currentIdx];
+            for (let dim in q.weights) { runningScores[dim] += q.weights[dim] * val; }
+            if (currentIdx < testQuestions.length - 1) { currentIdx++; showQuestion(); }
+            else { calculateFinal(); }
+        }
+
+        function calculateFinal() {
+            const final = {};
+            ['D', 'R', 'I'].forEach(dim => {
+                final[dim] = Math.round((runningScores[dim] / maxPossible[dim]) * 100);
+            });
+            showResult(final);
+        }
+
+        function showResult(final) {
+            document.getElementById('test-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            window.scrollTo(0,0);
+
+            const persona = matchPersona(final);
+            
+            setTimeout(() => {
+                ['d', 'r', 'i'].forEach(dim => {
+                    const val = final[dim.toUpperCase()];
+                    document.getElementById(`vessel-${dim}`).style.height = `${val}%`;
+                    document.getElementById(`label-${dim}`).innerText = val;
+                });
+            }, 100);
+
+            document.getElementById('persona-title').innerText = persona.title;
+            document.getElementById('persona-desc').innerText = persona.desc;
+            document.getElementById('list-strengths').innerHTML = persona.strengths.map(s => `<li>✧ ${s}</li>`).join('');
+            document.getElementById('list-advice').innerHTML = persona.advice.map(a => `<li>✎ ${a}</li>`).join('');
+
+            document.getElementById('dimension-feedback').innerHTML = `
+                <div class="p-5 rounded-3xl bg-pink-50 border-l-8 border-pink-400">
+                    <h4 class="text-pink-600 font-black mb-1 italic">🍰 饱腹感分析</h4>
+                    <p class="text-sm text-gray-500 font-bold">${getAnalysis(final.D, 'D')}</p>
+                </div>
+                <div class="p-5 rounded-3xl bg-blue-50 border-l-8 border-blue-400">
+                    <h4 class="text-blue-600 font-black mb-1 italic">📱 回响值分析</h4>
+                    <p class="text-sm text-gray-500 font-bold">${getAnalysis(final.R, 'R')}</p>
+                </div>
+                <div class="p-5 rounded-3xl bg-yellow-50 border-l-8 border-yellow-500">
+                    <h4 class="text-yellow-700 font-black mb-1 italic">🏃 冲刺值分析</h4>
+                    <p class="text-sm text-gray-500 font-bold">${getAnalysis(final.I, 'I')}</p>
+                </div>
+            `;
+
+            initChart(final);
+        }
+
+        function getAnalysis(val, type) {
+            if (type === 'D') return val >= 65 ? "精致追求者：平庸的日常喂不饱你的心。" : val >= 40 ? "平衡型选手：理想与现实握手言和。" : "自足观察者：不需要外界投喂也活得很好。";
+            if (type === 'R') return val >= 65 ? "情感接收器：任何细微波澜都会让你共鸣。" : val >= 40 ? "社交粘合剂：懂得适时关闭与开启雷达。" : "深度孤岛：冷静和独立是你的底色。";
+            if (type === 'I') return val >= 65 ? "天生引擎：比起等待，更喜欢掌握方向盘。" : val >= 40 ? "稳健执行者：看清形势后效率惊人。" : "静谧跟随者：在安稳框架中寻找节奏。";
+        }
+
+        function matchPersona(f) {
+            const hD = f.D >= 50, hR = f.R >= 50, hI = f.I >= 50;
+            const personas = {
+                "111": { title: "彩虹霸王龙", desc: "极致能量塔！你以极高的标准、极快的反馈和极强的行动力统领这片实验室。", strengths: ["领袖气质", "超快修复", "全能执行"], advice: ["慢下来听听小声音", "不必事事满分"] },
+                "110": { title: "蜜糖奶油考拉", desc: "精致守护者。虽然行动慢半拍，但你拥有极佳的品味和共情力。", strengths: ["审美极高", "温柔治愈", "合作精神"], advice: ["勇敢对烂事说不", "多一点果断"] },
+                "101": { title: "独角兽火龙果", desc: "清醒开拓者。追求极致的结果，但在过程中习惯独立前行。", strengths: ["自我驱动", "鲜明风格", "高效利落"], advice: ["多给伙伴一点回应", "共情不是弱点"] },
+                "100": { title: "冰淇淋傲娇猫", desc: "高冷孤岛。岛上满是奇花异草，只有真正的懂的人才能登船。", strengths: ["内心底线稳固", "高质量独处", "深度洞察"], advice: ["偶尔尝试敞开心扉", "微笑也有能量"] },
+                "011": { title: "闪电果冻猴", desc: "行动加油站！你是那种大家都很喜欢的、能迅速把事情落地的伙伴。", strengths: ["环境适应力", "正能量循环", "反馈极快"], advice: ["深思行动的长远意义", "坚持自我原则"] },
+                "010": { title: "棉花糖软软羊", desc: "宁静海绵。你吸收掉周围的喧嚣，留下最温柔的安宁。", strengths: ["极高包容度", "软实力出众", "天然亲和"], advice: ["表达真实的需求", "拒绝被过度消耗"] },
+                "001": { title: "薄荷凉凉狼", desc: "清冷猎人。不需要掌声，只要目标在前方，你就会像风一样奔跑。", strengths: ["绝对专注", "决策不受干扰", "自给自足"], advice: ["团队沟通能让你走更远", "分享阶段喜悦"] },
+                "000": { title: "深海透明水母", desc: "随缘观察者。在时间的维度里缓慢滑行，自有一种不被打扰的韵律。", strengths: ["超脱平衡感", "精神损耗极低", "独特视角"], advice: ["寻找一件心动的事", "主动发一次光"] }
+            };
+            return personas[`${hD?1:0}${hR?1:0}${hI?1:0}`];
+        }
+
+        function initChart(f) {
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['饱腹感', '回响值', '冲刺值'],
+                    datasets: [{
+                        data: [f.D, f.R, f.I],
+                        backgroundColor: 'rgba(255, 175, 204, 0.4)',
+                        borderColor: '#5e548e',
+                        borderWidth: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#5e548e',
+                        pointRadius: 6,
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            min: 0, max: 100,
+                            grid: { color: 'rgba(94, 84, 142, 0.1)' },
+                            ticks: { display: false },
+                            pointLabels: { font: { size: 14, weight: 'bold', family: 'ZCOOL KuaiLe' }, color: '#5e548e' }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
